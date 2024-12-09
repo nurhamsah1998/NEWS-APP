@@ -14,6 +14,7 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 	app.Post("/user", routes.CreateUser)
+	app.Get("/user", routes.GetUsers)
 
 	app.Listen(":3000")
 }
