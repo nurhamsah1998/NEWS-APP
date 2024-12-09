@@ -6,5 +6,5 @@ type Response struct {
 }
 
 func Res(message string, data interface{}) Response {
-	return Response{data: data, message: message}
+	return Response{message: message, data: data}
 }
