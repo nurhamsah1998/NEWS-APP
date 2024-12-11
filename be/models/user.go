@@ -10,7 +10,7 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-type APIUser struct {
-	id    int
-	email string
+type UserResponse struct {
+	Id    int
+	Email string
 }

@@ -4,12 +4,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nurhamsah1998/news/database"
 	"github.com/nurhamsah1998/news/models"
+	"github.com/nurhamsah1998/news/utils"
 )
 
 func GetUsers(c *fiber.Ctx) error {
 	users := []models.User{}
-	database.Database.Db.Limit(1).Find(&users)
-	return c.Status(200).JSON(users)
+	response := []models.UserResponse{}
+	database.Database.Db.Find(&users)
+	for _, value := range users {
+		serializer := models.UserResponse{Id: int(value.ID), Email: value.Email}
+		response = append(response, serializer)
+	}
+
+	return c.Status(200).JSON(utils.GlobalResponse{Data: response, Message: "success"})
+
 }
 
 func CreateUser(c *fiber.Ctx) error {
