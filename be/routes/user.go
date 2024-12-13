@@ -24,9 +24,6 @@ func GetUsers(c *fiber.Ctx) error {
 	database.Database.Db.Model(&models.User{}).Count(&totalData)
 	totalPage := math.Ceil(float64(totalData / int64(queryLimit)))
 
-	println(queryLimit, "<==queryLimit")
-	println(offside, "<==offside")
-	println(float64(totalPage), "<==totalPage")
 	database.Database.Db.Limit(queryLimit).Offset(offside).Find(&users)
 	for _, value := range users {
 		serializer := models.UserResponse{Id: int(value.ID), Email: value.Email}
@@ -55,10 +52,34 @@ func DeleteUser(c *fiber.Ctx) error {
 	return c.Status(200).SendString("Success")
 }
 
+func EditUserById(c *fiber.Ctx) error {
+	idUser, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("The id must be a number!")
+	}
+	var user models.User
+	result := database.Database.Db.Find(&user, idUser)
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusBadRequest).SendString("user not found!")
+	}
+	type DataBody struct {
+		Email string
+	}
+	var updateBody DataBody
+	if err := c.BodyParser(&updateBody); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+	resultAfterEdit := database.Database.Db.Save(&updateBody)
+	if resultAfterEdit.RowsAffected == 0 {
+		return c.Status(fiber.StatusBadRequest).SendString("Failed change user")
+	}
+	return c.Status(200).JSON(updateBody)
+}
+
 func GetUserById(c *fiber.Ctx) error {
 	idUser, err := c.ParamsInt("id")
 	if err != nil {
-		c.Status(fiber.StatusBadRequest).SendString("The id must be a number!")
+		return c.Status(fiber.StatusBadRequest).SendString("The id must be a number!")
 	}
 	var user models.User
 	result := database.Database.Db.Find(&user, idUser)
@@ -73,4 +94,5 @@ func UserRoutes(app *fiber.App) {
 	app.Get("/user", GetUsers)
 	app.Delete("/user/:id", DeleteUser)
 	app.Get("/user/:id", GetUserById)
+	app.Patch("/user/:id", EditUserById)
 }
