@@ -22,10 +22,6 @@ func main() {
 		},
 	})
 	app.Use(recover.New())
-	app.Get("/hello", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
-	app.Post("/user", routes.CreateUser)
-	app.Get("/user", routes.GetUsers)
+	routes.UserRoutes(app)
 	app.Listen(":3000")
 }
