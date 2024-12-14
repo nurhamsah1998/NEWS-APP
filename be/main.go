@@ -23,5 +23,6 @@ func main() {
 	})
 	app.Use(recover.New())
 	routes.UserRoutes(app)
+	routes.AuthRoutes(app)
 	app.Listen(":3000")
 }

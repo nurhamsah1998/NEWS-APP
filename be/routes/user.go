@@ -62,18 +62,15 @@ func EditUserById(c *fiber.Ctx) error {
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusBadRequest).SendString("user not found!")
 	}
-	type DataBody struct {
-		Email string
-	}
-	var updateBody DataBody
-	if err := c.BodyParser(&updateBody); err != nil {
+
+	if err := c.BodyParser(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-	resultAfterEdit := database.Database.Db.Save(&updateBody)
+	resultAfterEdit := database.Database.Db.Save(&user)
 	if resultAfterEdit.RowsAffected == 0 {
 		return c.Status(fiber.StatusBadRequest).SendString("Failed change user")
 	}
-	return c.Status(200).JSON(updateBody)
+	return c.Status(200).JSON(user)
 }
 
 func GetUserById(c *fiber.Ctx) error {
