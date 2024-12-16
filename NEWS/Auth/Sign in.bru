@@ -1,18 +1,17 @@
 meta {
-  name: Sign up
+  name: Sign in
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
-  url: http://localhost:3000/auth/sign-up
+  url: http://localhost:3000/auth/sign-in
   body: json
   auth: none
 }
 
 body:json {
   {
-    "full_name":"Nurhamsah pwd",
     "email":"nur.hamsah.cash@gmail",
     "password":"123"
   }
