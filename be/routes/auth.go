@@ -1,9 +1,12 @@
 package routes
 
 import (
+	"os"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/nurhamsah1998/news/database"
 	"github.com/nurhamsah1998/news/models"
 	"golang.org/x/crypto/bcrypt"
@@ -75,8 +78,26 @@ func SignIn(c *fiber.Ctx) error {
 			"message": "Invalid email or password.",
 		})
 	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub":     user.ID,
+		"expired": time.Now().Add(time.Second * 10).Unix(),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Cannot sign in token",
+		})
+	}
+	println(tokenString)
 	return c.Status(200).JSON(fiber.Map{
 		"message": "Successfully sign in",
+		"data": struct {
+			AccessToken string `json:"access_token"`
+		}{
+			AccessToken: tokenString,
+		},
 	})
 }
 
