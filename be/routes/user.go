@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nurhamsah1998/news/database"
+	"github.com/nurhamsah1998/news/middleware"
 	"github.com/nurhamsah1998/news/models"
 	"github.com/nurhamsah1998/news/utils"
 )
@@ -87,9 +88,10 @@ func GetUserById(c *fiber.Ctx) error {
 }
 
 func UserRoutes(app *fiber.App) {
-	app.Post("/user", CreateUser)
-	app.Get("/user", GetUsers)
-	app.Delete("/user/:id", DeleteUser)
-	app.Get("/user/:id", GetUserById)
-	app.Patch("/user/:id", EditUserById)
+	userApi := app.Group("/user", middleware.UserMiddleware)
+	userApi.Post("", CreateUser)
+	userApi.Get("", GetUsers)
+	userApi.Delete("/user/:id", DeleteUser)
+	userApi.Get("/user/:id", GetUserById)
+	userApi.Patch("/user/:id", EditUserById)
 }

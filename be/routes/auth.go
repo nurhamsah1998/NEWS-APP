@@ -38,17 +38,21 @@ func SignUp(c *fiber.Ctx) error {
 	}
 	user.Password = string(hashPwd)
 	user.Email = form.Email
-	errTransaction := database.Database.Db.Transaction(func(tx *gorm.DB) error {
+	var errorString string
+	database.Database.Db.Transaction(func(tx *gorm.DB) error {
 		if errUser := tx.Create(&user).Error; errUser != nil {
+			errorString = errUser.Error()
 			return errUser
 		}
 		if errProfile := tx.Create(&models.Profile{Fullname: form.FullName, UserID: int(user.ID)}).Error; errProfile != nil {
+			errorString = errProfile.Error()
 			return errProfile
 		}
 		return nil
 	})
 	/// EROR IF EMAIL ALREADY EXIST
-	if strings.Contains(errTransaction.Error(), "duplicate key") {
+	if strings.Contains(errorString, "duplicate key") {
+		errorString = ""
 		return c.Status(400).JSON(fiber.Map{
 			"message": form.Email + " Already exist. try something else",
 		})
@@ -80,7 +84,7 @@ func SignIn(c *fiber.Ctx) error {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":     user.ID,
-		"expired": time.Now().Add(time.Second * 10).Unix(),
+		"expired": time.Now().Add(time.Hour * 8).Unix(),
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -90,7 +94,6 @@ func SignIn(c *fiber.Ctx) error {
 			"message": "Cannot sign in token",
 		})
 	}
-	println(tokenString)
 	return c.Status(200).JSON(fiber.Map{
 		"message": "Successfully sign in",
 		"data": struct {
