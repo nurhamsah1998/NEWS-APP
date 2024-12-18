@@ -68,7 +68,6 @@ func SignIn(c *fiber.Ctx) error {
 	if err := c.BodyParser(&form); err != nil {
 		c.Status(400).JSON(err.Error())
 	}
-	println(form.Email, "<EMAIL")
 	database.Database.Db.First(&user, "email = ?", form.Email)
 	if user.ID == 0 {
 		return c.Status(500).JSON(fiber.Map{

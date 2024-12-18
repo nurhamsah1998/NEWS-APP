@@ -8,5 +8,6 @@ type Profile struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserID    int
-	User      User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User      User       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	NewsPost  []NewsPost `gorm:"constraint:OnUpdate:SET NULL,OnDelete:CASCADE;"`
 }
