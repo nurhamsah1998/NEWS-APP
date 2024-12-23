@@ -5,12 +5,16 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/user?page=9&limit=10
+  url: http://localhost:3000/user?page=1&limit=10
   body: none
   auth: none
 }
 
 params:query {
-  page: 9
+  page: 1
   limit: 10
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkIjoxNzM0OTczMDE0LCJzdWIiOjF9.3UAnjSMTmHhTfQq8__Smb_5G7-0t2reegRF8zNChnUo
 }
