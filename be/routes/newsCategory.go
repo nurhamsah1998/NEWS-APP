@@ -30,7 +30,32 @@ func GetAllCategory(c *fiber.Ctx) error {
 		Meta: utils.MetaData{TotalPage: int(totalPage),
 			Page: queryPage, TotalData: totalData}})
 }
+
+func PostCategory(c *fiber.Ctx) error {
+	var category models.NewsCategory
+	err := c.BodyParser(&category)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Something wrong",
+		})
+	}
+	if category.Name == "" {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Category name cannot be empty",
+		})
+	}
+	result := database.Database.Db.Save(&category)
+	if result.RowsAffected == 0 {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Something wrong, Cannot create category",
+		})
+	}
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Successfully create category",
+	})
+}
 func CategoryRoutes(app *fiber.App) {
 	categoryApi := app.Group("/news-category", middleware.UserMiddleware)
 	categoryApi.Get("", GetAllCategory)
+	categoryApi.Post("", PostCategory)
 }
