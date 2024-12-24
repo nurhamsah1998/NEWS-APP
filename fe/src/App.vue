@@ -1,6 +1,25 @@
-<script setup lang="ts">
+<!-- eslint-disable vue/no-export-in-script-setup -->
+<!-- eslint-disable vue/multi-word-component-names -->
+<script lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent } from 'vue';
+import router from './router';
+
+export default {
+  data(){
+    return {
+      name:"NURHAMSAH"
+    }
+  }, 
+  beforeMount(){
+    if(!this.$cookies.get('access_token')) router.replace({path:"/login"})
+  },
+  methods:{
+    getToken(){
+      console.log(this.$cookies.get('access_token'))
+    }
+  }
+}
 </script>
 
 <template>
