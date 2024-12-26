@@ -54,8 +54,18 @@ func PostCategory(c *fiber.Ctx) error {
 		"message": "Successfully create category",
 	})
 }
+func DeleteCategory(c *fiber.Ctx) error {
+	idCategory := c.Params("id")
+	var category models.NewsCategory
+	result := database.Database.Db.Delete(&category, idCategory)
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusBadRequest).SendString("Delete category failed")
+	}
+	return c.Status(200).SendString("Success")
+}
 func CategoryRoutes(app *fiber.App) {
 	categoryApi := app.Group("/news-category", middleware.UserMiddleware)
 	categoryApi.Get("", GetAllCategory)
 	categoryApi.Post("", PostCategory)
+	categoryApi.Delete("/:id", DeleteCategory)
 }
