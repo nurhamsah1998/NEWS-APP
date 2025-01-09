@@ -49,7 +49,6 @@ func DeleteUser(c *fiber.Ctx) error {
 	idUser := c.Params("id")
 	var user models.User
 	database.Database.Db.Delete(&user, idUser)
-	println(user.Email, "<===")
 	return c.Status(200).SendString("Success")
 }
 

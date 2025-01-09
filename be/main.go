@@ -40,5 +40,6 @@ func main() {
 	routes.UserRoutes(app)
 	routes.AuthRoutes(app)
 	routes.CategoryRoutes(app)
+	routes.PostRoutes(app)
 	app.Listen(":3000")
 }
